@@ -1,46 +1,26 @@
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
-using static System.Collections.Specialized.BitVector32;
 
 public class MapGen : MonoBehaviour
 {
-    float scrollSpeed = 5f;
+    public float scrollSpeed = 5f;
     [SerializeField] private List<GameObject> sections;
-    float targetTilesWide = 8f;
+    [SerializeField] private GameObject pickup;
+    float tilesWide = 8f;
     BoundsInt lastBounds;
     Vector3 leftEdge;
     float sectionTimer;
-    float sectionInterval=100f; 
+    float sectionInterval=0f;
+
+    private float distanceTravelled = 0f;
+    private float distancePerPoint = 1f;
+
+    private float pickupSpawnChance = 0.2f;
+
     void Start()
     {
-        SetCameraSize();
-        StartGenerating();
-    }
-    
-    private void SetCameraSize()
-    {
-        float aspectRatio = (float)Screen.height / (float)Screen.width;
-        Camera.main.orthographicSize = targetTilesWide * 0.5f * aspectRatio;
         leftEdge = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 1.5f, 10f));
-    }
-    private void StartGenerating()
-    {
-        GameObject first = Instantiate(sections[0], leftEdge, Quaternion.identity);
-        first.transform.parent = gameObject.transform;
-
-        Tilemap tilemap = first.GetComponentInChildren<Tilemap>();
-        BoundsInt bounds = tilemap.cellBounds;
-
-        Vector3 offset = new Vector3(-targetTilesWide / 2f - bounds.x, -bounds.y,0f);
-        first.transform.position = leftEdge + offset;
-
-
-        lastBounds = bounds;
-
-        sectionInterval = (lastBounds.size.y * first.GetComponentInChildren<Tilemap>().cellSize.y) / (scrollSpeed/1.2f);
     }
     private void GenerateSection()
     {
@@ -53,13 +33,14 @@ public class MapGen : MonoBehaviour
         Tilemap tilemap = section.GetComponentInChildren<Tilemap>();
         BoundsInt bounds = tilemap.cellBounds;
 
-        Vector3 offset = new Vector3(-targetTilesWide / 2f - bounds.x, -bounds.y * tilemap.cellSize.y, 0f);
+        Vector3 offset = new Vector3(- tilesWide / 2f - bounds.x, -bounds.y * tilemap.cellSize.y, 0f);
         section.transform.position = leftEdge + offset;
         section.gameObject.name = "yuh";
-        
-        BoundsInt currentBounds = section.GetComponent<Tilemap>().cellBounds;
-        lastBounds = currentBounds;
-        sectionInterval = (lastBounds.size.y * section.GetComponentInChildren<Tilemap>().cellSize.y) / (scrollSpeed / 1.5f);
+
+        lastBounds = bounds;
+        sectionInterval = (lastBounds.size.y * tilemap.cellSize.y) / (scrollSpeed / 1.5f);
+
+        AttemptPickupSpawn(section);
     }
     private void DespawnOffscreenSections()
     {
@@ -76,11 +57,29 @@ public class MapGen : MonoBehaviour
             }
         }
     }
+    private void AttemptPickupSpawn(GameObject section)
+    {
+        Transform spawnPoint = section.transform.Find("PickupSpawnPoint");
 
+        if (spawnPoint == null) return;
+
+        if (Random.value < pickupSpawnChance)
+        {
+            Debug.Log("spawned");
+            //int rand = Random.Range(0, pickupPrefabs.Length);
+            Instantiate(pickup, spawnPoint.position, Quaternion.identity, section.transform);
+        }
+        
+    }
 
     private void Update()
     {
+        if (GameManager.Instance.starting || GameManager.Instance.gameOver)
+            return;
+
+        float moveSpeed = scrollSpeed * Time.deltaTime;
         sectionTimer += Time.deltaTime;
+
         if (sectionTimer >= sectionInterval)
         {
             scrollSpeed += 0.1f;
@@ -88,7 +87,15 @@ public class MapGen : MonoBehaviour
             GenerateSection();
         }
 
-        transform.position -= new Vector3(0,scrollSpeed * Time.deltaTime,0);
+        distanceTravelled += moveSpeed;
+
+        while (distanceTravelled >= distancePerPoint)
+        {
+            GameManager.Instance.AddPoints(1);
+            distanceTravelled -= distancePerPoint;
+        }
+        transform.position += Vector3.down * moveSpeed;
+
         DespawnOffscreenSections();
     }
 }

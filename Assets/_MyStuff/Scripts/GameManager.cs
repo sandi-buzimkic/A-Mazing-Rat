@@ -1,11 +1,25 @@
+using System;
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject gameOverUI;
     public static GameManager Instance;
-    bool gameOver=false;
+
+    public GameObject gameStartUI;
+    public GameObject gameOverUI;
+    public GameObject runtimeUI;
+    public GameObject scoreUI;
+    public GameObject startUI;
+
+    public MapGen MapController;
+
+    public int score=0;
+    public bool gameOver =false;
+    public bool starting = true;
+    public Coroutine currentCoroutine;
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -17,13 +31,16 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        Time.timeScale = 0f;
+        gameStartUI.SetActive(true);
+        runtimeUI.SetActive(false);
+        currentCoroutine = StartCoroutine(Flash());
+        MapController.scrollSpeed = 0;
     }
     public void GameOver()
     {
         gameOver=true;
         gameOverUI.SetActive(true);
-        Time.timeScale = 0f;
+        MapController.scrollSpeed = 0;
     }
 
     public void RestartGame()
@@ -36,6 +53,42 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-        Time.timeScale = 1f;
+        if (starting)
+        {
+            starting=false;
+            gameStartUI.SetActive(false);
+            runtimeUI.SetActive(true);
+            MapController.scrollSpeed = 5f;
+
+            if (currentCoroutine == null)
+            {
+                return;
+            }
+            StopCoroutine(currentCoroutine);
+            currentCoroutine = null;
+            startUI.SetActive(false);
+        }
+        
+    }
+    public void AddPoints(int points)
+    {
+        score += points;
+        scoreUI.GetComponent<TextMeshProUGUI>().text = "" + score;
+    }
+    public void ResetPoints()
+    {
+        score += 0;
+        scoreUI.GetComponent<TextMeshProUGUI>().text = "" + score;
+    }
+    public IEnumerator Flash()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            startUI.SetActive(true);
+            yield return new WaitForSeconds(1f);
+            startUI.SetActive(false);
+            yield return new WaitForSeconds(0.5f);
+        }
+        
     }
 }
