@@ -1,10 +1,9 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-
+using UnityEngine.EventSystems;
 public class Mouse : MonoBehaviour
 {
-    private float moveSpeed = 50f;
+    private float moveSpeed = 100f;
     private bool isDragging = false;
     private bool isInvincible = false;
     SpriteRenderer spriteRenderer;
@@ -12,29 +11,33 @@ public class Mouse : MonoBehaviour
     public int currentLives;
     [SerializeField] private GameObject lives;
     [SerializeField] private GameObject lifePrefab;
-
+    [SerializeField] private UnityEngine.UI.Slider slider;
     private float tileSize = 1f;
     private int tilesWide = 7;
 
     private float targetTilt = 0f;
-    private float tiltAmount = 180f;
-    private float tiltSpeed = 100f;
+    private float tiltSpeed = 20f;
+    public float RatAboveThumb = 0f;
 
     private void Start()
     {
         currentLives = maxLives;
         UpdateUI();
+        LoadDistance();
+
         spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.sprite = CharacterManager.Instance.RatSprite;
     }
     void Update()
     {
         // Mouse or touch down
         if (Input.GetMouseButtonDown(0))
         {
-            
-            GameManager.Instance.StartGame();
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
 
-            if(!GameManager.Instance.gameOver)
+            GameFlowController.Instance.StartGame();
+
             isDragging = true;
         }
 
@@ -51,28 +54,46 @@ public class Mouse : MonoBehaviour
             screenPos.z = 0f; // For 2D
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
             worldPos.z = 0f; // Ensure it stays in 2D plane
+            worldPos += new Vector3(0f, RatAboveThumb, 0f); //Add padding above thumb
 
             float cameraCenterX = Camera.main.transform.position.x;
             float halfWidth = (tilesWide * tileSize) / 2f;
             worldPos.x = Mathf.Clamp(worldPos.x, cameraCenterX - halfWidth, cameraCenterX + halfWidth);
 
-            float horizontalDelta = transform.position.x - worldPos.x;
-            targetTilt = Mathf.Clamp(horizontalDelta * tiltAmount, -tiltAmount, tiltAmount);
-            Debug.Log(horizontalDelta);
-            Debug.Log("Target: " + targetTilt);
-            transform.position = Vector3.MoveTowards(transform.position, worldPos, moveSpeed * Time.deltaTime); ;
+            Vector2 direction = transform.position - worldPos;
+
+            if(direction.sqrMagnitude > 0.0001f)
+            {
+                targetTilt = Mathf.Atan2(direction.x, -direction.y) * Mathf.Rad2Deg;
+            }
+            else
+            {
+                targetTilt = Mathf.Lerp(targetTilt, 0f, Time.deltaTime * tiltSpeed);
+            }
+
+            transform.position = Vector3.MoveTowards(transform.position, worldPos, moveSpeed * Time.deltaTime);
         }
-
-        Quaternion desiredRotation = Quaternion.Euler(0f, 0f, targetTilt);
-        transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, Time.deltaTime * tiltSpeed);
-
-        // Slowly reset tilt when not dragging
-        if (!isDragging)
+        else
         {
             targetTilt = Mathf.Lerp(targetTilt, 0f, Time.deltaTime * tiltSpeed);
         }
+        Quaternion desiredRotation = Quaternion.Euler(0f, 0f, targetTilt);
+        transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, Time.deltaTime * tiltSpeed);
+
     }
     void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (isInvincible)
+        {
+            return;
+        }
+        if (collision.CompareTag("Obstacle"))
+        {
+            TakeDamage();
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D collision)
     {
         if (isInvincible)
         {
@@ -95,8 +116,8 @@ public class Mouse : MonoBehaviour
         {
             GameObject heart = Instantiate(lifePrefab);
             heart.transform.SetParent(lives.transform);
-            heart.transform.localPosition = new Vector3(0,- i * 150f, 0);
-            heart.transform.localScale = Vector3.one;
+            heart.transform.localPosition = new Vector3(0,- i * 50f, 0);
+            heart.transform.localScale = Vector3.one * 1.5f;
 
         }
     }
@@ -110,7 +131,17 @@ public class Mouse : MonoBehaviour
     }
     private void Die()
     {
-        GameManager.Instance.GameOver();
+        GameFlowController.Instance.SetState(GameState.GameOver);
+    }
+    public void SetDistance()
+    {
+        RatAboveThumb = slider.value;
+        PlayerPrefs.SetFloat("ratabovethumb", RatAboveThumb);
+    }
+    public void LoadDistance()
+    {
+        RatAboveThumb = PlayerPrefs.GetFloat("ratabovethumb", 0f);
+        slider.value = RatAboveThumb;
     }
     private IEnumerator InvincibilityFrames()
     {

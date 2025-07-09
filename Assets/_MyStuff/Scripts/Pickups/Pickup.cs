@@ -1,7 +1,9 @@
 using UnityEngine;
 
-public class Pickup : MonoBehaviour
+public abstract class Pickup : MonoBehaviour
 {
+    public abstract float SpawnChance { get; }
+
     int scoreValue = 10;
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -12,7 +14,7 @@ public class Pickup : MonoBehaviour
     }
     protected virtual void Collect(GameObject player)
     {
-        GameManager.Instance.AddPoints(scoreValue);
+        GameFlowController.Instance.ScoreManager.AddPoints(scoreValue);
         Destroy(gameObject);
     }
 }

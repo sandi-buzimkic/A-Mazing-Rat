@@ -4,22 +4,22 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
-{
-    public static GameManager Instance;
 
-    public GameObject gameStartUI;
-    public GameObject gameOverUI;
-    public GameObject runtimeUI;
-    public GameObject scoreUI;
-    public GameObject startUI;
+public enum GameState { Start, Playing, GameOver, Pause}
+
+public class GameFlowController: MonoBehaviour
+{
+    public static GameFlowController Instance;
 
     public MapGen MapController;
+    public UIManager UIManager;
+    public ScoreManager ScoreManager;
+
 
     public int score=0;
-    public bool gameOver =false;
-    public bool starting = true;
-    public Coroutine currentCoroutine;
+    public GameState GameState { get; private set; } = GameState.Start;
+
+    public Coroutine flashCoroutine;
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -31,64 +31,127 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        gameStartUI.SetActive(true);
-        runtimeUI.SetActive(false);
-        currentCoroutine = StartCoroutine(Flash());
-        MapController.scrollSpeed = 0;
+        Application.targetFrameRate = 60;
+        SetState(GameState.Start);
     }
+    public void SetState(GameState newState)
+    {
+        GameState = newState;
+
+        switch (newState)
+        {
+            case GameState.Start:
+
+                UIManager?.ShowStartUI();
+                UIManager.StartFlash();
+
+                MapController.scrollSpeed = 0f;
+                break;
+
+            case GameState.Playing:
+
+                Time.timeScale = 1f;
+                UIManager?.ShowGameplayUI();
+                if(MapController.scrollSpeed == 0f)
+                {
+                    MapController.scrollSpeed = 5f;
+                }
+                StopFlashing();
+
+                break;
+
+            case GameState.Pause:
+
+                UIManager?.ShowPauseUI();
+
+                Time.timeScale = 0f;
+
+                break;
+
+            case GameState.GameOver:
+                UIManager?.ShowGameOverUI();
+
+                MapController.scrollSpeed = 0f;
+                break;
+        }
+    }
+
+    public void StartGame()
+    {
+        if (GameState == GameState.Start)
+        {
+            SetState(GameState.Playing);
+        }
+    }
+
     public void GameOver()
     {
-        gameOver=true;
-        gameOverUI.SetActive(true);
-        MapController.scrollSpeed = 0;
+        if (GameState == GameState.Playing)
+        {
+            SetState(GameState.GameOver);
+        }
     }
 
     public void RestartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    public void StartGame()
+    public void StopFlashing()
     {
-        if (gameOver)
+        if (flashCoroutine != null)
         {
-            return;
+            StopCoroutine(flashCoroutine);
+            flashCoroutine = null;
         }
-        if (starting)
-        {
-            starting=false;
-            gameStartUI.SetActive(false);
-            runtimeUI.SetActive(true);
-            MapController.scrollSpeed = 5f;
+    }
+    public void Pause()
+    {
+        SetState(GameState.Pause);
+    }
+    public void ContinueGame()
+    {
+        StartCoroutine(CountdownToResume(3f));
+    }
+    public void Shop()
+    {
+        SceneManager.LoadScene("Shop");
+    }
 
-            if (currentCoroutine == null)
-            {
-                return;
-            }
-            StopCoroutine(currentCoroutine);
-            currentCoroutine = null;
-            startUI.SetActive(false);
-        }
-        
-    }
-    public void AddPoints(int points)
+    public IEnumerator CountdownToResume(float duration = 3f)
     {
-        score += points;
-        scoreUI.GetComponent<TextMeshProUGUI>().text = "" + score;
-    }
-    public void ResetPoints()
-    {
-        score += 0;
-        scoreUI.GetComponent<TextMeshProUGUI>().text = "" + score;
-    }
-    public IEnumerator Flash()
-    {
-        for (int i = 0; i < 10; i++)
+        float remaining = duration;
+        UIManager?.ShowGameplayUI();
+        while (remaining > 0)
         {
-            startUI.SetActive(true);
-            yield return new WaitForSeconds(1f);
-            startUI.SetActive(false);
-            yield return new WaitForSeconds(0.5f);
+            UIManager.ShowCountdownText(Mathf.CeilToInt(remaining).ToString());
+
+            float t = 0f;
+            Vector3 startScale = Vector3.one * 2f;
+            Vector3 endScale = Vector3.one;
+
+            while (t < 1f)
+            {
+                t += Time.unscaledDeltaTime * 2f; 
+                UIManager.countdownText.transform.localScale = Vector3.Lerp(startScale, endScale, t);
+                yield return null;
+            }
+
+            remaining--;
+            yield return new WaitForSecondsRealtime(0.2f);
         }
-        
+
+        UIManager.HideCountdownText();
+        SetState(GameState.Playing);
+    }
+    public void StartTimeSlow()
+    {
+        StartCoroutine(SlowTime());
+    }
+
+    public IEnumerator SlowTime()
+    {
+        Time.timeScale = 0.5f;
+        yield return new WaitForSecondsRealtime(5f);
+        Time.timeScale = 1f;
     }
 }

@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5016915113029620675}
   - component: {fileID: 2869938129499040204}
-  - component: {fileID: 5208831230116285414}
   - component: {fileID: -7132787781679434913}
+  - component: {fileID: 5208831230116285414}
   m_Layer: 0
   m_Name: LifePickup
   m_TagString: Untagged
@@ -28,8 +28,8 @@ Transform:
   m_GameObject: {fileID: 1309188361377932335}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.16926, y: 1.12453, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -4470592730861715767, guid: b6137848ff7ad7b45b02c955b6d7a6d2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -89,18 +89,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5208831230116285414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1309188361377932335}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76cf7de5ef7408b48943e1b49846e803, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &-7132787781679434913
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -147,3 +135,15 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &5208831230116285414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1309188361377932335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76cf7de5ef7408b48943e1b49846e803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -1,15 +1,45 @@
-More sections
+-Scene animation-
 
--score-
+-Heart Sprite-
 
-Shop
+-Shop Sprite-
+
+Shop Background
+
+Coin system
+
+-Player Preference above thumb-
+
+More pickups (coins, slow)
 
 Skins
 
-points
+More sections
+
+Sprites
+
+Dynamic obstacles
+
+-Make sections flip-
+
+-stackable cheeses to keep screen more free-
+-Score visible on death-
+-costume popping-
+
+-Pause-
+
+-score-
+
+-Shop-
+
+-points-
 
 -hearts-
 
-Pause
+-Sides-
 
-Sides
+
+
+
+
+
