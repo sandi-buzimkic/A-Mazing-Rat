@@ -6,4 +6,5 @@ public class Skin
     public Sprite sprite;
     public string name;
     public int price;
+    public bool unlocked;
 }

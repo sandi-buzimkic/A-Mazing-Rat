@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: barrel_0
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: -8568042794190644651, guid: ed41ddb19c8b79543a3a46dbd9a75c8b, type: 3}
+  m_Sprite: {fileID: -8568042794190644651, guid: 78168f7611ace6540b1a1b45917c592c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

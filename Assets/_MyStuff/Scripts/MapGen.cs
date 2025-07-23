@@ -47,20 +47,81 @@ public class MapGen : MonoBehaviour
         lastBounds = bounds;
         sectionInterval = (lastBounds.size.y * tilemap.cellSize.y) / (scrollSpeed / 1.5f);
         bool isFlipped = Random.value < 0.5f;
-        if(isFlipped) { 
-        FlipSection(section);
+        if (isFlipped)
+        {
+            FlipSection(tilemap);
+
+            // Find pickup spawn point(s)
+            var spawnPoints = section.GetComponentsInChildren<Transform>()
+                                .Where(t => t.name.Contains("PickupSpawnPoint"));
+
+            float minX = bounds.xMin;
+            float maxX = bounds.xMax;
+
+            foreach (var spawnPoint in spawnPoints)
+            {
+                Vector3 localPos = spawnPoint.localPosition;
+
+                // Mirror local X position inside the tilemap bounds
+                float relativeX = localPos.x - minX;
+                float mirroredX = (maxX - minX) - relativeX + minX;
+
+                spawnPoint.localPosition = new Vector3(mirroredX, localPos.y, localPos.z);
+
+                // Optional: flip spawn point visuals if needed
+                Vector3 localScale = spawnPoint.localScale;
+                spawnPoint.localScale = new Vector3(-localScale.x, localScale.y, localScale.z);
+            }
         }
-        AttemptPickupSpawn(section, isFlipped);
+
+        AttemptPickupSpawn(section);
         
     }
-    private void FlipSection(GameObject section)
+    void FlipSection(Tilemap tilemap)
     {
-        Transform location = section.transform;
-        location.localScale = new Vector3(-1f,1f,1f);
-        location.position = new Vector3(-location.position.x, location.position.y, location.position.z);
+        if (tilemap == null) return;
+
+        BoundsInt bounds = tilemap.cellBounds;
+
+        var tilesToSet = new List<(Vector3Int pos, TileBase tile, Matrix4x4 matrix)>();
+
+        for (int x = bounds.xMin; x < bounds.xMax; x++)
+        {
+            int mirroredX = bounds.xMin + bounds.xMax - x - 1;
+            for (int y = bounds.yMin; y < bounds.yMax; y++)
+            {
+                Vector3Int srcPos = new Vector3Int(x, y, 0);
+                TileBase tile = tilemap.GetTile(srcPos);
+                if (tile == null) continue;
+
+                Vector3Int dstPos = new Vector3Int(mirroredX, y, 0);
+                Matrix4x4 transform = tilemap.GetTransformMatrix(srcPos);
+                tilesToSet.Add((dstPos, tile, transform));
+            }
+        }
+
+        // Clear mirrored area
+        for (int x = bounds.xMin; x < bounds.xMax; x++)
+        {
+            int mirroredX = bounds.xMin + bounds.xMax - x - 1;
+            for (int y = bounds.yMin; y < bounds.yMax; y++)
+            {
+                Vector3Int dstPos = new Vector3Int(mirroredX, y, 0);
+                tilemap.SetTile(dstPos, null);
+            }
+        }
+
+        foreach (var (pos, tile, matrix) in tilesToSet)
+        {
+            tilemap.SetTile(pos, tile);
+            tilemap.SetTransformMatrix(pos, matrix);
+            tilemap.SetTileFlags(pos, TileFlags.None);
+        }
+
+        tilemap.RefreshAllTiles();
     }
 
-    private void AttemptPickupSpawn(GameObject section, bool isFlipped)
+    private void AttemptPickupSpawn(GameObject section)
     {
         Transform spawnPoint = section.transform.Find("PickupSpawnPoint");
 
@@ -72,12 +133,6 @@ public class MapGen : MonoBehaviour
             return;
 
         GameObject spawnedPickup = Instantiate(selectedPickup, spawnPoint.position, Quaternion.identity, section.transform);
-
-        if (isFlipped)
-        {
-            Transform scale = spawnedPickup.transform;
-            scale.localScale = new Vector3(-scale.localScale.x, scale.localScale.y, scale.localScale.z);
-        }
     }
 
     private GameObject GetRandomPickup()
@@ -145,7 +200,7 @@ public class MapGen : MonoBehaviour
 
         if (sectionTimer >= sectionInterval)
         {
-            scrollSpeed += 0.1f;
+            scrollSpeed += 0.05f;
             sectionTimer = 0f;
             GenerateSection();
         }

@@ -16,30 +16,40 @@ MonoBehaviour:
   - sprite: {fileID: -7728451017590509097, guid: 357dbb92f69bfbc4fb27c9dc64c0d134, type: 3}
     name: Rat
     price: 0
+    unlocked: 1
+  - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
+    name: Ratstronaut
+    price: 50
+    unlocked: 0
+  - sprite: {fileID: -4883999666748062965, guid: 90aff1554cb739949abcde99fed3b5e0, type: 3}
+    name: Pixel Rat
+    price: 50
+    unlocked: 1
   - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
     name: Astrorat
     price: 50
+    unlocked: 0
   - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
     name: Astrorat
     price: 50
+    unlocked: 0
   - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
     name: Astrorat
     price: 50
+    unlocked: 0
   - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
     name: Astrorat
     price: 50
+    unlocked: 0
   - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
     name: Astrorat
     price: 50
+    unlocked: 0
   - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
     name: Astrorat
     price: 50
+    unlocked: 0
   - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
     name: Astrorat
     price: 50
-  - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
-    name: Astrorat
-    price: 50
-  - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
-    name: Astrorat
-    price: 50
+    unlocked: 1

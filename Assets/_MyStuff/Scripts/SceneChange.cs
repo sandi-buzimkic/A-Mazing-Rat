@@ -12,8 +12,11 @@ public class SceneChanger : MonoBehaviour
     }
     public void GoToMaze()
     {
-        PlayerPrefs.SetInt("skinindex", skinManager.currentIndex);
-        CharacterManager.Instance.RatSprite = skinManager.skinsDB.skins[skinManager.currentIndex].sprite;
+        if (skinManager.skinsDB.skins[skinManager.currentIndex].unlocked)
+        {
+            PlayerPrefs.SetInt("skinindex", skinManager.currentIndex);
+        }
+        CharacterManager.Instance.RatSprite = skinManager.skinsDB.skins[PlayerPrefs.GetInt("skinindex", 0)].sprite;
         StartCoroutine(Transition("Maze"));
     }
     public IEnumerator Transition(string scene)

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 
@@ -19,6 +20,8 @@ public class GameFlowController: MonoBehaviour
     public int score=0;
     public GameState GameState { get; private set; } = GameState.Start;
 
+    [SerializeField] private Image slowTimeUI;
+    private Coroutine slowTimeCoroutine;
     public Coroutine flashCoroutine;
     void Awake()
     {
@@ -143,15 +146,50 @@ public class GameFlowController: MonoBehaviour
         UIManager.HideCountdownText();
         SetState(GameState.Playing);
     }
+
     public void StartTimeSlow()
     {
-        StartCoroutine(SlowTime());
+        if (slowTimeCoroutine != null)
+            StopCoroutine(slowTimeCoroutine);
+
+        slowTimeCoroutine = StartCoroutine(SlowTime());
     }
 
     public IEnumerator SlowTime()
     {
-        Time.timeScale = 0.5f;
-        yield return new WaitForSecondsRealtime(5f);
+        if (slowTimeUI != null)
+        {
+            slowTimeUI.fillAmount = 1f;
+            slowTimeUI.gameObject.SetActive(true);
+        }
+
+        float duration = 5f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            if (GameState != GameState.Pause)
+            {
+                Time.timeScale = 0.6f;
+                elapsed += Time.unscaledDeltaTime;
+
+                if (slowTimeUI != null)
+                {
+                    slowTimeUI.fillAmount = 1f - (elapsed / duration);
+                }
+            }
+            yield return null;
+        }
+
         Time.timeScale = 1f;
+
+        if (slowTimeUI != null)
+        {
+            slowTimeUI.gameObject.SetActive(false);
+        }
+
+        slowTimeCoroutine = null;
     }
+
+
 }
