@@ -3,11 +3,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
+using static System.Collections.Specialized.BitVector32;
 
 public class MapGen : MonoBehaviour
 {
     public float scrollSpeed = 5f;
     [SerializeField] private List<GameObject> sections;
+    [SerializeField] private List<GameObject> objects;
     public List<GameObject> pickupEntries;
     [SerializeField] private GameObject background;
     [SerializeField] private GameObject floorPrefab;
@@ -24,6 +26,18 @@ public class MapGen : MonoBehaviour
 
     private float distanceTravelled = 0f;
     private float distancePerPoint = 1f;
+
+    private float noPickupChance = 0.4f;
+
+
+
+    [SerializeField] private GameObject fallingObjectPrefab;
+    [SerializeField] private int sectionsBetweenFalls = 5;
+    [SerializeField] private float fallCooldown = 2f;
+
+    private int sectionCount = 0;
+    private bool isInFallPhase = false;
+    private float fallTimer = 0f;
 
     void Start()
     {
@@ -132,24 +146,32 @@ public class MapGen : MonoBehaviour
         if (selectedPickup == null)
             return;
 
-        GameObject spawnedPickup = Instantiate(selectedPickup, spawnPoint.position, Quaternion.identity, section.transform);
+        Instantiate(selectedPickup, spawnPoint.position, Quaternion.identity, section.transform);
     }
 
     private GameObject GetRandomPickup()
     {
-        float rand = Random.value;
+        float totalWeight = pickupEntries.Sum(entry => entry.GetComponent<Pickup>().SpawnChance);
+        float rand = Random.Range(0f, totalWeight + noPickupChance);
 
-        var sortedEntries = pickupEntries.OrderBy(entry => entry.GetComponent<Pickup>().SpawnChance);
+        if (rand < noPickupChance)
+            return null;
 
+        rand -= noPickupChance;
 
-        foreach (var entry in sortedEntries)
+        foreach (var entry in pickupEntries)
         {
-            if (rand <= entry.GetComponent<Pickup>().SpawnChance)
+            float weight = entry.GetComponent<Pickup>().SpawnChance;
+            if (rand < weight)
                 return entry;
+
+            rand -= weight;
         }
 
         return null;
     }
+
+
     private void DespawnOffscreenSections()
     {
         float bottomY = Camera.main.ViewportToWorldPoint(new Vector3(0f, -0.5f, 0f)).y;
@@ -189,6 +211,13 @@ public class MapGen : MonoBehaviour
             }
         }
     }
+    private void SpawnFallingObject()
+    {
+        GameObject faller = Instantiate(fallingObjectPrefab, leftEdge, Quaternion.identity);
+        faller.transform.SetParent(transform, true);
+      
+    }
+
 
     private void Update()
     {
@@ -198,11 +227,30 @@ public class MapGen : MonoBehaviour
         float moveSpeed = scrollSpeed * Time.deltaTime;
         sectionTimer += Time.deltaTime;
 
-        if (sectionTimer >= sectionInterval)
+        if (isInFallPhase)
+        {
+            fallTimer += Time.deltaTime;
+            if (fallTimer >= fallCooldown)
+            {
+                isInFallPhase = false;
+                fallTimer = 0f;
+            }
+        }
+        else if (sectionTimer >= sectionInterval)
         {
             scrollSpeed += 0.05f;
             sectionTimer = 0f;
-            GenerateSection();
+
+            sectionCount++;
+            if (sectionCount % sectionsBetweenFalls == 0)
+            {
+                SpawnFallingObject();
+                isInFallPhase = true;
+            }
+            else
+            {
+                GenerateSection();
+            }
         }
 
         if (lastHeight < -background.transform.position.y + backgroundTileHeight)

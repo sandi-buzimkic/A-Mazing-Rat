@@ -8,6 +8,7 @@ public class Mouse : MonoBehaviour
     private bool isInvincible = false;
     SpriteRenderer spriteRenderer;
     private int maxLives = 3;
+    private float heartSize = 2f;
     public int currentLives;
     [SerializeField] private GameObject lives;
     [SerializeField] private GameObject lifePrefab;
@@ -166,7 +167,7 @@ public class Mouse : MonoBehaviour
             GameObject heart = Instantiate(lifePrefab);
             heart.transform.SetParent(lives.transform);
             heart.transform.localPosition = new Vector3(0,- i * 50f, 0);
-            heart.transform.localScale = Vector3.one * 1.5f;
+            heart.transform.localScale = Vector3.one * heartSize;
         }
     }
 

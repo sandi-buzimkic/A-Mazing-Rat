@@ -40,6 +40,22 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -158466497541208044, guid: e5706697c50788b4694b18ab2675fbc5, type: 3}
+      propertyPath: m_EdgeRadius
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -158466497541208044, guid: e5706697c50788b4694b18ab2675fbc5, type: 3}
+      propertyPath: m_GeometryType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -158466497541208044, guid: e5706697c50788b4694b18ab2675fbc5, type: 3}
+      propertyPath: m_GenerationType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -158466497541208044, guid: e5706697c50788b4694b18ab2675fbc5, type: 3}
+      propertyPath: m_UsedByEffector
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -158466497541208044, guid: e5706697c50788b4694b18ab2675fbc5, type: 3}
       propertyPath: m_CompositePaths.m_Paths.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -2102,6 +2118,18 @@ PrefabInstance:
     - target: {fileID: 5306896254394344825, guid: e5706697c50788b4694b18ab2675fbc5, type: 3}
       propertyPath: m_Tiles.Array.data[79].second.m_TileObjectToInstantiateIndex
       value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 7073896844203711458, guid: e5706697c50788b4694b18ab2675fbc5, type: 3}
+      propertyPath: m_ExtrusionFactor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7073896844203711458, guid: e5706697c50788b4694b18ab2675fbc5, type: 3}
+      propertyPath: m_UseDelaunayMesh
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7073896844203711458, guid: e5706697c50788b4694b18ab2675fbc5, type: 3}
+      propertyPath: m_MaximumTileChangeCount
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 7826788957710791883, guid: e5706697c50788b4694b18ab2675fbc5, type: 3}
       propertyPath: m_LocalPosition.x

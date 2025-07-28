@@ -25,22 +25,22 @@ MonoBehaviour:
     name: Pixel Rat
     price: 50
     unlocked: 1
-  - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
-    name: Astrorat
+  - sprite: {fileID: -7703098219799654321, guid: f506ce489239320498244209ba25f087, type: 3}
+    name: X-Rat
     price: 50
-    unlocked: 0
-  - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
-    name: Astrorat
+    unlocked: 1
+  - sprite: {fileID: 7653040819540596176, guid: 160de9f1566f50346bb874c2c9333c7c, type: 3}
+    name: Ratatouille
     price: 50
-    unlocked: 0
-  - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
-    name: Astrorat
+    unlocked: 1
+  - sprite: {fileID: 3292861862474059226, guid: 8554006679d65c24b9b71c7514d9a516, type: 3}
+    name: Ciggy Rat
     price: 50
-    unlocked: 0
-  - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
-    name: Astrorat
+    unlocked: 1
+  - sprite: {fileID: -357421434760999972, guid: b819b0f8ab5c15a46b6ed2ab76c0ed13, type: 3}
+    name: Gaming Rat
     price: 50
-    unlocked: 0
+    unlocked: 1
   - sprite: {fileID: -5858099061022299432, guid: 9467001b611907041b5c10d9234f0fb7, type: 3}
     name: Astrorat
     price: 50

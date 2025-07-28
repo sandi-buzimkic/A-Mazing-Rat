@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: aa3ee26bf6f3ddb42ac2b419d6a8ceea
+guid: 160de9f1566f50346bb874c2c9333c7c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5112029422962596646
-    second: Lowrescrate_0
+      213: 7653040819540596176
+    second: Ratatouille_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Lowrescrate_0
+      name: Ratatouille_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 124
-        height: 124
+        x: 20
+        y: 8
+        width: 88
+        height: 109
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ad428f2135c6e09b0800000000000000
-      internalID: -5112029422962596646
+      spriteID: 0d5184ce310153a60800000000000000
+      internalID: 7653040819540596176
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 3111213a66f1b3f4da311a9776d59085
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Lowrescrate_0: -5112029422962596646
+      Ratatouille_0: 7653040819540596176
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

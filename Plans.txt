@@ -4,6 +4,26 @@ Skins
 
 Sprites
 
+tooltip
+
+fix pause button
+
+forgiving edges?
+
+pause fix
+
+SFX
+
+Spawn chances
+
+Lives correction
+
+More sections
+
+Dynamic obstacles
+
+-fix shadow overlap-
+
 -Scene animation-
 
 -Heart Sprite-
@@ -22,15 +42,7 @@ Sprites
 
 -Fix time slow pause-
 
-Spawn chances
-
-Lives correction
-
-More sections
-
 -Rat cant teleport-
-
-Dynamic obstacles
 
 -Make sections flip-
 
