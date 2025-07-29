@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -27,13 +28,13 @@ public class MapGen : MonoBehaviour
     private float distanceTravelled = 0f;
     private float distancePerPoint = 1f;
 
-    private float noPickupChance = 0.4f;
+    private float noPickupChance = 0.6f;
 
-
+    int objectCount = 5;
+    float delayBetween = 10f;
 
     [SerializeField] private GameObject fallingObjectPrefab;
-    [SerializeField] private int sectionsBetweenFalls = 5;
-    [SerializeField] private float fallCooldown = 2f;
+    [SerializeField] private int sectionsBetweenFalls = 2;
 
     private int sectionCount = 0;
     private bool isInFallPhase = false;
@@ -211,13 +212,19 @@ public class MapGen : MonoBehaviour
             }
         }
     }
-    private void SpawnFallingObject()
+    private IEnumerator SpawnFallingObjectsSequence()
     {
-        GameObject faller = Instantiate(fallingObjectPrefab, leftEdge, Quaternion.identity);
-        faller.transform.SetParent(transform, true);
-      
+        delayBetween = 5f / scrollSpeed;
+        for (int i = 0; i < objectCount; i++)
+        {
+            float randPos = Random.Range(-2f, 2f);
+            Quaternion randRotation = Quaternion.Euler(0f, 0f, Random.Range(-45f, 45f));
+            GameObject faller = Instantiate(fallingObjectPrefab, new Vector3(randPos, leftEdge.y, -2f), randRotation);
+            faller.GetComponent<Fall>().fallTime /= scrollSpeed;
+            faller.transform.SetParent(transform, true);
+            yield return new WaitForSeconds(delayBetween);
+        }
     }
-
 
     private void Update()
     {
@@ -230,7 +237,7 @@ public class MapGen : MonoBehaviour
         if (isInFallPhase)
         {
             fallTimer += Time.deltaTime;
-            if (fallTimer >= fallCooldown)
+            if (fallTimer >= delayBetween * objectCount)
             {
                 isInFallPhase = false;
                 fallTimer = 0f;
@@ -244,7 +251,7 @@ public class MapGen : MonoBehaviour
             sectionCount++;
             if (sectionCount % sectionsBetweenFalls == 0)
             {
-                SpawnFallingObject();
+                StartCoroutine(SpawnFallingObjectsSequence());
                 isInFallPhase = true;
             }
             else

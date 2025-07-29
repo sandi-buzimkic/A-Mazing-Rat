@@ -12,7 +12,7 @@ public class Fall : MonoBehaviour
     private PolygonCollider2D polygonCollider;
     private SpriteRenderer sprite;
 
-    float fallTime = 1f;
+    public float fallTime;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -31,6 +31,7 @@ public class Fall : MonoBehaviour
         {
             section = Instantiate(templateLight.gameObject);
             section.transform.position = transform.position; 
+            section.transform.rotation = transform.rotation; 
             section.transform.SetParent(transform.parent, true);
             int pointCount = composite.GetPathPointCount(i);
             Vector2[] points = new Vector2[pointCount];
@@ -51,8 +52,7 @@ public class Fall : MonoBehaviour
     }
     IEnumerator ManageSprite()
     {
-        yield return new WaitForSeconds(3f);
-
+        yield return new WaitForSeconds(fallTime);
         sprite.enabled = true;
 
        // float a = Mathf.Lerp(sprite.color.a, 255, t / circleFadeDuration);
@@ -61,7 +61,7 @@ public class Fall : MonoBehaviour
         sprite.color = c;
 
         Vector3 endScale = transform.localScale;
-        Vector3 startScale = endScale * 5f;
+        Vector3 startScale = endScale * 2f;
         transform.localScale = startScale;
 
         float elapsed = 0f;
@@ -84,9 +84,10 @@ public class Fall : MonoBehaviour
 
         Debug.Log(transform.localScale);
         polygonCollider.enabled = true;
-        yield return new WaitForSeconds(0.5f);
-        Destroy(section);
-        Destroy(this.gameObject);
+        Destroy(gameObject, fallTime * 4);
+        Destroy(section, fallTime * 4);
+        //Destroy(section);
+        //Destroy(this.gameObject);
     }
 
 }

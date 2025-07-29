@@ -5529,7 +5529,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ced9a7dd9e44df34c863a434f53e5612, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollSpeed: 5
+  scrollSpeed: 20
   sections:
   - {fileID: 3267197210338871876, guid: 30a4c2f56030a1a41bf7f413cc2d1779, type: 3}
   - {fileID: 882914918259125894, guid: 5596555201641d4428db9b196dbea07a, type: 3}
